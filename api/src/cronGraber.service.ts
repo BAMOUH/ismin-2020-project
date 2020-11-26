@@ -22,30 +22,41 @@ export class cronGraberService {
     this.logger.debug('Refetching data...');
 
     try {
-      let data  = await this.http.get('https://velib-metropole-opendata.smoove.pro/opendata/Velib_Metropole/station_status.json').toPromise();        
-      await this.logger.debug(data);
+      let data  = await this.http.get(process.env.STATION_AVAILABILITY_API_URL).pipe(
+        map(response => response.data),
+      );
+      let response = data.toPromise();
+      response.then(data =>{
+        let StationEntities : Array<any> = data.data.stations;
+        
+        StationEntities.map(oneStationEntity => this.handleUpdateOrSend(oneStationEntity,data.lastUpdatedOther));
+      }).catch(
+        error => this.logger.debug("Error" +error)
+      );
     } catch (error) {
-      this.logger.debug(error);
+      this.logger.debug("Error" +error);
       
     }
+    await this.logger.debug('Done refetching data !');
    
+  }
+
+  async handleUpdateOrSend(oneStationEntity , lastUpdatedOther : number){
+    let stationAv : StationAvailability={
+      station_id: oneStationEntity.station_id,
+      stationCode: oneStationEntity.stationCode,
+      mechanical: oneStationEntity.num_bikes_available_types[0].mechanical,
+      ebike: oneStationEntity.num_bikes_available_types[1].ebike,
+      numDocksAvailable: oneStationEntity.numDocksAvailable,
+      last_reported: oneStationEntity.last_reported,
+      lastUpdatedOther: lastUpdatedOther,
+    } 
     
-    
-    // let stationAv : StationAvailability={
-    //   station_id: number;
-    //   stationCode: string;
-    //   mechanical: number;
-    //   ebike: number;
-    //   numDocksAvailable: number;
-    //   last_reported: number;
-    //   lastUpdatedOther: number;
-    // } 
-    
-    // let query = { 
-    //   station_id: 124455
-    // };
-    // let update = {stationCode:"2121"};
-    // let options = {upsert: true, new: true, setDefaultsOnInsert: true};
-    // let model = await this.StationAvailabilityModel.findOneAndUpdate(query, update, options);
+    let query = { 
+      station_id: stationAv.station_id
+    };
+    let update = stationAv;
+    let options = {upsert: true, new: true, setDefaultsOnInsert: true};
+    await this.StationAvailabilityModel.findOneAndUpdate(query, update, options);
   }
 }

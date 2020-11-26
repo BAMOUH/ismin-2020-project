@@ -8,6 +8,15 @@ export class StationAvailablityDocument extends Document {
 
     @Prop()
     stationCode: string;
+    
+    @Prop()
+    name: string;
+
+    @Prop()
+    lon: number;
+
+    @Prop()
+    lat: number;
 
     @Prop()
     mechanical: number;
