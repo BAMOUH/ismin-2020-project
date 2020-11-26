@@ -14,8 +14,8 @@ class StationAdapter(private val stations: ArrayList<Station>) : RecyclerView.Ad
         val (station_id, stationCode, name, lon, lat, mechanical, ebike, numDocksAvailable, last_reported, lastUpdatedOther)= this.stations[position]
 
         holder.txvName.text = name
-        holder.txvEbike.text = ebike.toString()
-        holder.txvMechanical.text = mechanical.toString()
+        holder.txvEbike.text = "ebike :" + ebike.toString()
+        holder.txvMechanical.text =", mechanical :" +  mechanical.toString()
     }
 
     override fun getItemCount(): Int {
