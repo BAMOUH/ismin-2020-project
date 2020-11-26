@@ -16,9 +16,49 @@ export class cronGraberService {
     private http: HttpService,
   ) {}
 
+  @Cron('30 * * * * *')
+  async handleCronNameLatLon() {
+    this.logger.debug('Refetching NameLatLon data...');
+
+    try {
+      let data  = await this.http.get(process.env.STATION_NAME_LAT_LON_API_URL).pipe(
+        map(response => response.data),
+      );
+      let response = data.toPromise();
+      response.then(data =>{
+        let StationEntities : Array<any> = data.data.stations;
+        
+        StationEntities.map(oneStationEntity => this.handleUpdateOrSendNameLatLon(oneStationEntity));
+      }).catch(
+        error => this.logger.debug("Error" +error)
+      );
+    } catch (error) {
+      this.logger.debug("Error" +error);
+      
+    }
+    await this.logger.debug('Done refetching NameLatLon data !');
+   
+  }
+
+  async handleUpdateOrSendNameLatLon(oneStationEntity  ){
+    let stationNameLonLat ={
+      station_id: oneStationEntity.station_id,
+      name: oneStationEntity.name,
+      lon: oneStationEntity.lon,
+      lat: oneStationEntity.lat,
+    } 
+    
+    let query = { 
+      station_id: stationNameLonLat.station_id
+    };
+    let update = stationNameLonLat;
+    let options = {upsert: true, new: true, setDefaultsOnInsert: true};
+    await this.StationAvailabilityModel.findOneAndUpdate(query, update, options);
+  }
+
 
   @Cron('45 * * * * *')
-  async handleCron() {
+  async handleCronStationAvailability() {
     this.logger.debug('Refetching data...');
 
     try {
@@ -29,7 +69,7 @@ export class cronGraberService {
       response.then(data =>{
         let StationEntities : Array<any> = data.data.stations;
         
-        StationEntities.map(oneStationEntity => this.handleUpdateOrSend(oneStationEntity,data.lastUpdatedOther));
+        StationEntities.map(oneStationEntity => this.handleUpdateOrSendStationAvailability(oneStationEntity,data.lastUpdatedOther));
       }).catch(
         error => this.logger.debug("Error" +error)
       );
@@ -41,7 +81,7 @@ export class cronGraberService {
    
   }
 
-  async handleUpdateOrSend(oneStationEntity , lastUpdatedOther : number){
+  async handleUpdateOrSendStationAvailability(oneStationEntity , lastUpdatedOther : number){
     let stationAv : StationAvailability={
       station_id: oneStationEntity.station_id,
       stationCode: oneStationEntity.stationCode,

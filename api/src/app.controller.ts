@@ -1,12 +1,18 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { AppService } from './app.service';
+import { StationInfos } from './StationInfos';
 
-@Controller()
+@Controller('stations')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  async getStations(): Promise<StationInfos[]>  {
+    return this.appService.getStations();
+  }
+
+  @Get('/:stationId')
+  async getStationById(@Param('stationId') stationId: number): Promise<StationInfos> {
+    return this.appService.getStationById(stationId);
   }
 }
