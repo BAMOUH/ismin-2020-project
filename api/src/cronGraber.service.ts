@@ -45,7 +45,7 @@ export class cronGraberService {
       station_id: oneStationEntity.station_id,
       name: oneStationEntity.name,
       lon: oneStationEntity.lon,
-      lat: oneStationEntity.lat,
+      lat: oneStationEntity.last_reported,
     } 
     
     let query = { 

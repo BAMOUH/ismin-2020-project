@@ -5,11 +5,11 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-interface BookService {
+interface StationService {
 
-    @GET("books")
-    fun getAllBooks(): Call<ArrayList<Book>>
+    @GET("stations")
+    fun getAllStations(): Call<ArrayList<Station>>
 
-    @POST("books")
-    fun createBook(@Body() book: Book): Call<Book>
+    @GET("stations/:stationId")
+    fun getStationById(@Body() stationId: Int): Call<Station>
 }
