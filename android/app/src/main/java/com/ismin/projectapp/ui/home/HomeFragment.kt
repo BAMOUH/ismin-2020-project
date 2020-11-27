@@ -30,15 +30,14 @@ class HomeFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val stationToAdd : Station =  Station(12121231, "132323", "Hooya", 344.23, 2333.2323, 2, 1, 32, 1321223232, 24343434);
-        stationshelf.addStation(stationToAdd);
+
 
         homeViewModel =
                 ViewModelProvider(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("https://bookshelf-gme.cleverapps.io")
+            .baseUrl("http://10.0.2.2:3000/")
             .build()
 
         stationService = retrofit.create(StationService::class.java)
@@ -51,8 +50,7 @@ class HomeFragment : Fragment() {
                 val allStations = response.body()
                 allStations?.forEach {
                     stationshelf.addStation(it)
-                    Snackbar.make(root, "Hello", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show()
+
                 }
                 displayList()
 
@@ -76,11 +74,6 @@ class HomeFragment : Fragment() {
     }
 
     fun displayErrorToast(t: Throwable,root:View){
-//        Toast.makeText(
-//            activity?.applicationContext,
-//            "Network error ${t.localizedMessage}",
-//            Toast.LENGTH_LONG
-//        ).show()
         Snackbar.make(root, "Network error ${t.localizedMessage}", Snackbar.LENGTH_LONG)
             .setAction("Action", null).show()
     }
