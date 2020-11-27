@@ -2,13 +2,13 @@ package com.ismin.projectapp
 import java.io.Serializable
 
 class StationShelf : Serializable{
-    private val storage = HashMap< Int, Station>()
+    private val storage = HashMap< Long, Station>()
 
     fun addStation(station: Station){
         this.storage[station.station_id] = station
     }
 
-    fun getStation(station_id: Int): Station? {
+    fun getStation(station_id: Long): Station? {
         return this.storage[station_id]
     }
 
