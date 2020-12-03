@@ -13,7 +13,7 @@ class StationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
     var txvMechanical: TextView = itemView.findViewById(R.id.r_station_txv_mechanical)
 
 
-    fun initialize(item: Station, action: OnStationListener){
+    fun initializeListener(item: Station, action: OnStationListener){
 
             itemView.setOnClickListener { View ->
                 action.onStationClick(item, adapterPosition)

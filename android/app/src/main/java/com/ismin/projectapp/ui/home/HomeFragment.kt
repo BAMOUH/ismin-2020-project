@@ -37,7 +37,7 @@ class HomeFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("http://10.0.2.2:3000/")
+            .baseUrl("http://app-5b336f60-7eb3-47be-aad4-06682834c6a6.cleverapps.io")//"http://10.0.2.2:3000/"
             .build()
 
         stationService = retrofit.create(StationService::class.java)
