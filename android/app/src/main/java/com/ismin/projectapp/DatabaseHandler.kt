@@ -119,7 +119,9 @@ class DatabaseHandler(context: Context, name: String?, factory: SQLiteDatabase.C
         db.close()
     }
 
-
+        fun isStatationInFav (stationCode : String) : Boolean{
+            return true
+        }
     fun getFavoriteOnDB(mCtx: Context) : ArrayList<Station>{
         val qry = "Select * From $FAVORITES_TABLE_NAME"
         val db = this.readableDatabase
