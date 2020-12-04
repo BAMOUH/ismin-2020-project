@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.ismin.projectapp.ui.home.HomeFragment
+import kotlin.math.min
 
 private const val ARG_STATIONS = "ARG_STATIONS"
 
@@ -38,7 +39,9 @@ class StationListFragment : Fragment(), OnStationListener{
             savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        stationsToShow = stations.slice(0..offsetToScroll) as ArrayList<Station>
+//        if ()
+//        stationsToShow = stations.slice(0..min(offsetToScroll ,stations.size -1)) as ArrayList<Station>
+        stationsToShow = stations
         val rootView = inflater.inflate(R.layout.fragment_station_list, container, false)
 
         this.rcvStations = rootView.findViewById(R.id.f_station_list_rcv_stations)
@@ -81,7 +84,8 @@ class StationListFragment : Fragment(), OnStationListener{
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
         offsetToScroll = (offset+1) * 20
-        stationsToShow = stations.slice(0..offsetToScroll) as ArrayList<Station>
+//        stationsToShow = stations.slice(0..min(offsetToScroll ,stations.size -1 )) as ArrayList<Station>
+        stationsToShow = stations
         adapter.updateItem(stationsToShow)
 //        Snackbar.make(root, "we did load more"+offsetToScroll.toString(), Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
