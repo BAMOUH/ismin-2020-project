@@ -125,9 +125,8 @@ class DatabaseHandler(context: Context, name: String?, factory: SQLiteDatabase.C
             val db = this.readableDatabase
             val cursor = db.rawQuery(qry, null)
 
-            Log.d("data base query1111:", cursor.moveToNext().toString())
-            val result: Boolean = cursor.moveToNext()
-            Log.d("data base query2222:", cursor.moveToNext().toString())
+            val result: Boolean = cursor.count == 0
+            Log.d("data base query2222:", result.toString())
             cursor.close()
             db.close()
             return result

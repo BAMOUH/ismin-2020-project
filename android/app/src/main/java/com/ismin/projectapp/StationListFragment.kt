@@ -110,11 +110,12 @@ class StationListFragment : Fragment(), OnStationListener{
     override fun likeClick(item: Station, favBtn: Button) {
         context?.let {
 
-            if (HomeFragment.dbHandler.isStatationInFav(item.stationCode)){
-                HomeFragment.dbHandler.deleteFavorite(item.stationCode)
+            if (HomeFragment.dbHandler.isStatationInFav(item.stationCode) ){
+                HomeFragment.dbHandler.addFavoriteOnDB(it, item)
 
             }else {
-                HomeFragment.dbHandler.addFavoriteOnDB(it, item)
+                HomeFragment.dbHandler.deleteFavorite(item.stationCode)
+
             }
 
 
