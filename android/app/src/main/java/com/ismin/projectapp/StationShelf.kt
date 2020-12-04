@@ -16,6 +16,10 @@ class StationShelf : Serializable{
         return ArrayList(this.storage.values).sortedBy { station -> station.station_id }
     }
 
+    fun getAllStationsForDb(): ArrayList<Station> {
+        return ArrayList(ArrayList(this.storage.values).sortedBy { station -> station.station_id })
+    }
+
 
     fun getTotalNumberOfStations(): Int {
         return this.storage.size

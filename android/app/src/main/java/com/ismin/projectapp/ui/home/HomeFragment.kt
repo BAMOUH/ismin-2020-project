@@ -1,5 +1,7 @@
 package com.ismin.projectapp.ui.home
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +21,13 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
+
 class HomeFragment : Fragment() {
+
+    //for database
+    companion object{
+        lateinit var dbHandler: DatabaseHandler
+    }
 
     private val stationshelf = StationShelf()
     private lateinit var homeViewModel: HomeViewModel
@@ -30,7 +38,6 @@ class HomeFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-
 
         homeViewModel =
                 ViewModelProvider(this).get(HomeViewModel::class.java)
@@ -50,27 +57,66 @@ class HomeFragment : Fragment() {
                 val allStations = response.body()
                 allStations?.forEach {
                     stationshelf.addStation(it)
-
                 }
-                displayList()
+
+
+                displayListOnLine(root)
 
             }
 
             override fun onFailure(call: Call<ArrayList<Station>>, t: Throwable) {
                 displayErrorToast(t,root)
 
+                //for data base to display off line
+                displayListOffLine(root)
+
             }
         })
         return root
     }
 
-    fun displayList() {
+
+    //for database
+    private fun getStationsFromDb(root: View): ArrayList<Station>{
+        val stationsList = dbHandler.getStationOnDB(root.context)
+        return stationsList
+    }
+
+    //for database
+    private fun addStationToDb(root: View, stationsList: ArrayList<Station>){
+        stationsList.forEach {
+            dbHandler.addStationOnDB(root.context, it)
+        }
+
+    }
+
+
+
+    fun displayListOnLine(root:View) {
+        //for database
+        dbHandler = DatabaseHandler(root.context, null, null, 1)
+        addStationToDb(root, stationshelf.getAllStationsForDb())
+
         val stationListFragment = StationListFragment.newInstance(stationshelf.getAllStations())
 
             activity?.supportFragmentManager?.beginTransaction()
             ?.replace(R.id.a_main_lyt_container, stationListFragment)
             ?.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             ?.commit()
+    }
+
+    fun displayListOffLine(root:View){
+        //for database
+        dbHandler = DatabaseHandler(root.context, null, null, 1)
+        var dbStations: ArrayList<Station> = getStationsFromDb(root)
+
+        val stationListFragment = StationListFragment.newInstance(dbStations)//dbStations.subList(0,5) just for test: geting just 5 item
+
+        activity?.supportFragmentManager?.beginTransaction()
+                ?.replace(R.id.a_main_lyt_container, stationListFragment)
+                ?.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                ?.commit()
+
     }
 
     fun displayErrorToast(t: Throwable,root:View){
