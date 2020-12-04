@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -56,12 +57,8 @@ class StationListFragment : Fragment(), OnStationListener{
         val dividerItemDecoration = DividerItemDecoration(context, linearLayoutManager.orientation)
         this.rcvStations.addItemDecoration(dividerItemDecoration)
 
-        // Retain an instance so that you can call `resetState()` for fresh searches
-        // Retain an instance so that you can call `resetState()` for fresh searches
         scrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
                 loadNextDataFromApi(page,rootView , rcvStations.adapter as StationAdapter)
             }
         }
@@ -82,11 +79,6 @@ class StationListFragment : Fragment(), OnStationListener{
     }
 
     fun loadNextDataFromApi(offset: Int, root: View, adapter: StationAdapter) {
-        // Send an API request to retrieve appropriate paginated data
-        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
-        //  --> Deserialize and construct new model objects from the API response
-        //  --> Append the new data objects to the existing set of items inside the array of items
-        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
         offsetToScroll = (offset+1) * 20
         if (stations.size > 1){
             stationsToShow = stations.slice(0..min(offsetToScroll ,stations.size -1)) as ArrayList<Station>
@@ -95,11 +87,8 @@ class StationListFragment : Fragment(), OnStationListener{
             stationsToShow = stations
         }
         adapter.updateItem(stationsToShow)
-//        Snackbar.make(root, "we did load more"+offsetToScroll.toString(), Snackbar.LENGTH_LONG)
-//                .setAction("Action", null).show()
     }
     override fun onStationClick(item: Station, position: Int) {
-        Toast.makeText(this.context, "you clicked on item # ${position + 1}", Toast.LENGTH_SHORT).show()
 
         val intent = Intent(this.context, DetailsActivity::class.java)
         intent.putExtra("STATIONNAME", item.name)
@@ -110,11 +99,19 @@ class StationListFragment : Fragment(), OnStationListener{
     override fun likeClick(item: Station, favBtn: Button) {
         context?.let {
 
-            if (HomeFragment.dbHandler.isStatationInFav(item.stationCode)){
-                HomeFragment.dbHandler.deleteFavorite(item.stationCode)
+            if (HomeFragment.dbHandler.isStatationInFav(item.stationCode) ){
+                HomeFragment.dbHandler.addFavoriteOnDB(it, item)
 
             }else {
-                HomeFragment.dbHandler.addFavoriteOnDB(it, item)
+                HomeFragment.dbHandler.deleteFavorite(item.stationCode)
+
+                val stationListFragment = StationListFragment.newInstance(stationsToShow)
+
+                activity?.supportFragmentManager?.beginTransaction()
+                        ?.replace(R.id.a_main_lyt_container, stationListFragment)
+                        ?.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        ?.commit()
+
             }
 
 
