@@ -4,7 +4,7 @@
 
 Android Application + Web Server Development
 
-![TypeScript](https://badges.frapsoft.com/typescript/love/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/
+![TypeScript](https://badges.frapsoft.com/typescript/love/typescript.svg?v=101)
 
 by EL BACHIR BAMOUH and FAHD LYOUSFI
 
@@ -30,7 +30,6 @@ Database of Stations from [https://data.opendatasoft.com/](https://data.opendata
 - Adding and removing some stations to/from favorites ✔️
 - Storage of data coming from API in local SQLITE database ✔️
 - Storage of favorite stations in the same database ✔️
--
 
 ### Get started !
 
@@ -40,11 +39,14 @@ Database of Stations from [https://data.opendatasoft.com/](https://data.opendata
 
 ### Technical information:
 
-- The App is connected to a remote REST API server in clever-cloud plateforme. Data are stored in A MongoDB database.
-- The App contains two fragments (Home and database Favorites)
+- The App is connected to a remote REST API server in clever-cloud plateforme. Data are stored in a MongoDB database.
+- The App contains two fragments (Home and database Favorites).
 - The App contains two activities (main activity and detail activity)
-- It is possible to mark a station as a favorite. The information is stored is the SQLITE database of the Android OS.
-- we do a pagination with Endless RecyclerView Scroll
+- It is possible to add/remove a station as a favorite. The information is stored is the SQLITE database of the Android OS.
+- we do a pagination with Endless RecyclerView Scroll.
+- We show the local data before getting the ones from the API if we got any stations stored, to enhance UX.
+- The API have got a cron to periodically grab data from the Velib's API and refresh the ones in our database.
+- The app contains a refresh button to manually refresh the data and get real time data when needed by the user.
 
 ---
 
