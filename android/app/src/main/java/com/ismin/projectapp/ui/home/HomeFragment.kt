@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.ismin.projectapp.*
 import retrofit2.Call
@@ -42,17 +43,30 @@ class HomeFragment : Fragment() {
         homeViewModel =
                 ViewModelProvider(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
+
+
+        getNewStationsFromAPI(root)
+        root.findViewById<FloatingActionButton>(R.id.refresh).setOnClickListener { view ->
+            getNewStationsFromAPI(root)
+            Snackbar.make(view, "Stations Refreshed", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
+
+        }
+        return root
+    }
+
+    private fun getNewStationsFromAPI (root : View){
         val retrofit = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("http://app-5b336f60-7eb3-47be-aad4-06682834c6a6.cleverapps.io")//"http://10.0.2.2:3000/"
-            .build()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl("http://app-5b336f60-7eb3-47be-aad4-06682834c6a6.cleverapps.io")//"http://10.0.2.2:3000/"
+                .build()
 
         stationService = retrofit.create(StationService::class.java)
 
         stationService.getAllStations().enqueue(object : Callback<ArrayList<Station>> {
             override fun onResponse(
-                call: Call<ArrayList<Station>>,
-                response: Response<ArrayList<Station>>
+                    call: Call<ArrayList<Station>>,
+                    response: Response<ArrayList<Station>>
             ) {
                 val allStations = response.body()
                 allStations?.forEach {
@@ -72,9 +86,7 @@ class HomeFragment : Fragment() {
 
             }
         })
-        return root
     }
-
 
     //for database
     private fun getStationsFromDb(root: View): ArrayList<Station>{
@@ -85,6 +97,7 @@ class HomeFragment : Fragment() {
     //for database
     private fun addStationToDb(root: View, stationsList: ArrayList<Station>){
         stationsList.forEach {
+
             dbHandler.addStationOnDB(root.context, it)
         }
 
