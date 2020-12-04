@@ -39,9 +39,13 @@ class StationListFragment : Fragment(), OnStationListener{
             savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-//        if ()
-//        stationsToShow = stations.slice(0..min(offsetToScroll ,stations.size -1)) as ArrayList<Station>
-        stationsToShow = stations
+        if (stations.size > 1){
+            stationsToShow = stations.slice(0..min(offsetToScroll ,stations.size -1)) as ArrayList<Station>
+
+        }else {
+            stationsToShow = stations
+        }
+
         val rootView = inflater.inflate(R.layout.fragment_station_list, container, false)
 
         this.rcvStations = rootView.findViewById(R.id.f_station_list_rcv_stations)
@@ -84,8 +88,12 @@ class StationListFragment : Fragment(), OnStationListener{
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
         offsetToScroll = (offset+1) * 20
-//        stationsToShow = stations.slice(0..min(offsetToScroll ,stations.size -1 )) as ArrayList<Station>
-        stationsToShow = stations
+        if (stations.size > 1){
+            stationsToShow = stations.slice(0..min(offsetToScroll ,stations.size -1)) as ArrayList<Station>
+
+        }else {
+            stationsToShow = stations
+        }
         adapter.updateItem(stationsToShow)
 //        Snackbar.make(root, "we did load more"+offsetToScroll.toString(), Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
