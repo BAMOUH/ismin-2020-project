@@ -45,7 +45,7 @@ class HomeFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
 
 
-        getNewStationsFromAPI(root)
+        displayListOffLine(root)
         root.findViewById<FloatingActionButton>(R.id.refresh).setOnClickListener { view ->
             getNewStationsFromAPI(root)
             Snackbar.make(view, "Stations Refreshed", Snackbar.LENGTH_LONG)
@@ -69,13 +69,13 @@ class HomeFragment : Fragment() {
                     response: Response<ArrayList<Station>>
             ) {
                 val allStations = response.body()
+                stationshelf.resetAllStations()
                 allStations?.forEach {
                     stationshelf.addStation(it)
                 }
 
 
                 displayListOnLine(root)
-                addStationToDb(root, stationshelf.getAllStationsForDb())
 
             }
 
@@ -87,6 +87,8 @@ class HomeFragment : Fragment() {
 
             }
         })
+        addStationToDb(root, stationshelf.getAllStationsForDb())
+
     }
 
     //for database
@@ -98,8 +100,8 @@ class HomeFragment : Fragment() {
     //for database
     private fun addStationToDb(root: View, stationsList: ArrayList<Station>){
         stationsList.forEach {
-//            dbHandler.deleteStation(it.stationCode)
-//            dbHandler.addStationOnDB(root.context, it)
+            dbHandler.deleteStation(it.stationCode)
+            dbHandler.addStationOnDB(root.context, it)
         }
 
     }
@@ -122,9 +124,13 @@ class HomeFragment : Fragment() {
     fun displayListOffLine(root:View){
         //for database
         dbHandler = DatabaseHandler(root.context, null, null, 1)
-        //dbHandler.deleteStation("42027") //test remove
 
         var dbStations: ArrayList<Station> = getStationsFromDb(root)
+
+        if (dbStations.size == 0){
+            getNewStationsFromAPI(root)
+            return
+        }
 
         val stationListFragment = StationListFragment.newInstance(dbStations)
 

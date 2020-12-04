@@ -25,5 +25,9 @@ class StationShelf : Serializable{
         return this.storage.size
     }
 
+    fun resetAllStations() {
+        storage.clear()
+    }
+
 }
 
