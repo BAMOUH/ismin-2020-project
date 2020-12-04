@@ -89,7 +89,7 @@ class StationListFragment : Fragment(), OnStationListener{
 
         val intent = Intent(this.context, DetailsActivity::class.java)
         intent.putExtra("STATIONNAME", item.name)
-        intent.putExtra("STATIONDESC", "Code de station: " + item.stationCode + "\nLongitude: " + item.lon + "\nLatitude: " + item.lat)
+        intent.putExtra("STATIONDESC", "ID de station: " + item.station_id.toString()  + "\nCode de station: " + item.stationCode + "\nLongitude: " + item.lon + "\nLatitude: " + item.lat)
         startActivity(intent)
     }
 

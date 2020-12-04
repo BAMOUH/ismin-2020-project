@@ -95,6 +95,7 @@ class HomeFragment : Fragment() {
     fun displayListOnLine(root:View) {
         //for database
         dbHandler = DatabaseHandler(root.context, null, null, 1)
+
         addStationToDb(root, stationshelf.getAllStationsForDb())
 
         val stationListFragment = StationListFragment.newInstance(stationshelf.getAllStations())
@@ -108,9 +109,10 @@ class HomeFragment : Fragment() {
     fun displayListOffLine(root:View){
         //for database
         dbHandler = DatabaseHandler(root.context, null, null, 1)
+        //dbHandler.deleteStation("42027") //test remove
         var dbStations: ArrayList<Station> = getStationsFromDb(root)
 
-        val stationListFragment = StationListFragment.newInstance(dbStations)//dbStations.subList(0,5) just for test: geting just 5 item
+        val stationListFragment = StationListFragment.newInstance(dbStations)
 
         activity?.supportFragmentManager?.beginTransaction()
                 ?.replace(R.id.a_main_lyt_container, stationListFragment)

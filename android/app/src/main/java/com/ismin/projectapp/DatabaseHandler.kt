@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.icu.util.UniversalTimeScale.toLong
+import android.util.Log
 import android.widget.Toast
 import com.ismin.projectapp.Station
 
@@ -31,7 +32,7 @@ class DatabaseHandler(context: Context, name: String?, factory: SQLiteDatabase.C
 
     override fun onCreate(db: SQLiteDatabase?) {
         val CREATE_STATIONS_TABLE = ("CREATE TABLE $STATIONS_TABLE_NAME (" +
-                "$COLUMN_STATION_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "$COLUMN_STATION_ID INTEGER PRIMARY KEY," +
                 "$COLUMN_STATIONCODE TEXT," +
                 "$COLUMN_NAME TEXT," +
                 "$COLUMN_LON DOUBLE," +
@@ -43,7 +44,7 @@ class DatabaseHandler(context: Context, name: String?, factory: SQLiteDatabase.C
                 "$COLUMN_LASTUPDATEDOTHER INTEGER )" )
 
         val CREATE_FAVORITES_TABLE = ("CREATE TABLE $FAVORITES_TABLE_NAME (" +
-                "$COLUMN_STATION_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "$COLUMN_STATION_ID INTEGER PRIMARY KEY," +
                 "$COLUMN_STATIONCODE TEXT," +
                 "$COLUMN_NAME TEXT," +
                 "$COLUMN_LON DOUBLE," +
@@ -166,13 +167,29 @@ class DatabaseHandler(context: Context, name: String?, factory: SQLiteDatabase.C
         val db = this.writableDatabase
         try {
             db.insert(FAVORITES_TABLE_NAME, null, values)
-            //db.rawQuery()
             Toast.makeText(mCtx, "station added", Toast.LENGTH_SHORT ).show()
         } catch(e: Exception){
             Toast.makeText(mCtx, e.message, Toast.LENGTH_SHORT).show()
         }
         db.close()
     }
+
+    fun deleteFavorite(code: String){
+        val db = this.writableDatabase
+        val qry = "DELETE FROM " + FAVORITES_TABLE_NAME +
+                    " WHERE " + COLUMN_STATIONCODE + " = " + code
+        db.execSQL(qry)
+        db.close()
+    }
+
+    fun deleteStation(code: String){
+        val db = this.writableDatabase
+        val qry = "DELETE FROM " + STATIONS_TABLE_NAME +
+                " WHERE " + COLUMN_STATIONCODE + " = " + code
+        db.execSQL(qry)
+        db.close()
+    }
+
 
 
 
