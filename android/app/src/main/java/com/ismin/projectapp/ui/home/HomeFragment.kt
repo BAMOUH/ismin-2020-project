@@ -75,6 +75,7 @@ class HomeFragment : Fragment() {
 
 
                 displayListOnLine(root)
+                addStationToDb(root, stationshelf.getAllStationsForDb())
 
             }
 
@@ -109,7 +110,6 @@ class HomeFragment : Fragment() {
         //for database
         dbHandler = DatabaseHandler(root.context, null, null, 1)
 
-        addStationToDb(root, stationshelf.getAllStationsForDb())
 
         val stationListFragment = StationListFragment.newInstance(stationshelf.getAllStations())
 
