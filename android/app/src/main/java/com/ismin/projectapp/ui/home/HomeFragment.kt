@@ -97,7 +97,7 @@ class HomeFragment : Fragment() {
     //for database
     private fun addStationToDb(root: View, stationsList: ArrayList<Station>){
         stationsList.forEach {
-
+            dbHandler.deleteStation(it.stationCode)
             dbHandler.addStationOnDB(root.context, it)
         }
 
