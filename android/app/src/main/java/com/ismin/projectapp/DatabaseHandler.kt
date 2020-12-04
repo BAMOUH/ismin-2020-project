@@ -55,8 +55,9 @@ class DatabaseHandler(context: Context, name: String?, factory: SQLiteDatabase.C
                 "$COLUMN_LAST_REPORTED INTEGER," +
                 "$COLUMN_LASTUPDATEDOTHER INTEGER )" )
 
-        db?.execSQL(CREATE_STATIONS_TABLE)
         db?.execSQL(CREATE_FAVORITES_TABLE)
+        db?.execSQL(CREATE_STATIONS_TABLE)
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {

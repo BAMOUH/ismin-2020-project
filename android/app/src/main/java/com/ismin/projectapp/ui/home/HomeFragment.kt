@@ -123,7 +123,8 @@ class HomeFragment : Fragment() {
         //for database
         dbHandler = DatabaseHandler(root.context, null, null, 1)
         //dbHandler.deleteStation("42027") //test remove
-        var dbStations: ArrayList<Station> = getStationsFromDb(root)
+        //var dbStations: ArrayList<Station> = getStationsFromDb(root)
+        var dbStations: ArrayList<Station> = dbHandler.getFavoriteOnDB(root.context)
 
         val stationListFragment = StationListFragment.newInstance(dbStations)
 

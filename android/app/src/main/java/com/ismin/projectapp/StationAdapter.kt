@@ -19,6 +19,8 @@ class StationAdapter(private val stations: ArrayList<Station>, var clickListener
         holder.txvMechanical.text =", mechanical :" +  mechanical.toString()
 
         holder.initializeListener(this.stations.get(position), clickListener)
+        holder.initFavListener(this.stations.get(position), clickListener)
+
 
     }
 
