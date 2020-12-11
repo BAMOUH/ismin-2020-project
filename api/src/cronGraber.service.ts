@@ -7,6 +7,13 @@ import { StationAvailability } from './StationAvailability';
 import { map } from 'rxjs/operators';
 
 
+interface ServerResponse {
+  lastUpdatedOther: number,
+  data: {
+    stations: any
+  }
+}
+
 @Injectable()
 export class cronGraberService {
   
@@ -58,27 +65,29 @@ export class cronGraberService {
 
 
   @Cron('45 * * * * *')
-  async handleCronStationAvailability() {
+  handleCronStationAvailability() {
     this.logger.debug('Refetching data...');
 
-    try {
-      let data  = await this.http.get(process.env.STATION_AVAILABILITY_API_URL).pipe(
+    this.http
+      .get<ServerResponse>(process.env.STATION_AVAILABILITY_API_URL)
+      .pipe(
         map(response => response.data),
-      );
-      let response = data.toPromise();
-      response.then(data =>{
-        let StationEntities : Array<any> = data.data.stations;
-        
-        StationEntities.map(oneStationEntity => this.handleUpdateOrSendStationAvailability(oneStationEntity,data.lastUpdatedOther));
-      }).catch(
-        error => this.logger.debug("Error" +error)
-      );
-    } catch (error) {
-      this.logger.debug("Error" +error);
-      
-    }
-    await this.logger.debug('Done refetching data !');
-   
+        tap(serverResponse => {
+          serverResponse.data.stations.forEach(oneStationEntity =>
+            this.handleUpdateOrSendStationAvailability(
+              oneStationEntity,
+              serverResponse.lastUpdatedOther,
+            ),
+          );
+        }),
+        catchError(error => {
+          this.logger.debug('Error' + error);
+          return EMPTY;
+        }),
+      )
+      .subscribe(() => {
+        this.logger.debug('Done refetching data !');
+      });
   }
 
   async handleUpdateOrSendStationAvailability(oneStationEntity , lastUpdatedOther : number){
